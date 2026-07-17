@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Serif+JP:wght@400;500;600;700&display=swap');
+
+@layer base {
+    :root {
+        --color-primary: #c41e3a;
+        --color-bg: #fafafa;
+        --color-surface: #ffffff;
+        --color-text: #0a0a0a;
+        --color-text-secondary: #6a6a6a;
+        --color-border: #e5e5e5;
+    }
+
+    .dark {
+        --color-bg: #0a0a0a;
+        --color-surface: #111111;
+        --color-text: #f5f5f5;
+        --color-text-secondary: #8a8a8a;
+        --color-border: #2a2a2a;
+    }
+
+    * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-yamagata-white dark:bg-yamagata-black text-yamagata-black dark:text-yamagata-pearl transition-colors duration-300;
+    }
+
+    ::selection {
+        @apply bg-yamagata-red/20 text-yamagata-red;
+    }
+
+    .dark ::selection {
+        @apply bg-yamagata-red/30 text-white;
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        @apply bg-yamagata-snow dark:bg-yamagata-dark;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        @apply bg-yamagata-silver/40 dark:bg-yamagata-steel rounded-full;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        @apply bg-yamagata-silver dark:bg-yamagata-silver;
+    }
+}
+
+@layer components {
+    .btn-primary {
+        @apply inline-flex items-center justify-center px-8 py-3.5 bg-yamagata-red text-white font-medium rounded-xl
+               hover:bg-yamagata-red-dark active:bg-yamagata-red-dark
+               transition-all duration-300 ease-out
+               shadow-lg shadow-yamagata-red/20 hover:shadow-xl hover:shadow-yamagata-red/30
+               hover:-translate-y-0.5 active:translate-y-0
+               focus:outline-none focus:ring-2 focus:ring-yamagata-red/50 focus:ring-offset-2
+               dark:focus:ring-offset-yamagata-black;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center px-8 py-3.5
+               bg-yamagata-snow dark:bg-yamagata-charcoal
+               text-yamagata-black dark:text-yamagata-pearl
+               font-medium rounded-xl border border-yamagata-pearl dark:border-yamagata-graphite
+               hover:bg-yamagata-pearl dark:hover:bg-yamagata-graphite
+               transition-all duration-300 ease-out
+               hover:-translate-y-0.5 active:translate-y-0
+               focus:outline-none focus:ring-2 focus:ring-yamagata-silver/50 focus:ring-offset-2
+               dark:focus:ring-offset-yamagata-black;
+    }
+
+    .btn-ghost {
+        @apply inline-flex items-center justify-center px-6 py-2.5
+               text-yamagata-silver dark:text-yamagata-mist
+               font-medium rounded-xl
+               hover:text-yamagata-black dark:hover:text-white
+               hover:bg-yamagata-snow dark:hover:bg-yamagata-charcoal
+               transition-all duration-300 ease-out;
+    }
+
+    .card-premium {
+        @apply bg-white dark:bg-yamagata-dark
+               rounded-2xl border border-yamagata-pearl/50 dark:border-yamagata-graphite/50
+               shadow-sm hover:shadow-premium
+               transition-all duration-500 ease-out
+               hover:-translate-y-1;
+    }
+
+    .card-glass {
+        @apply bg-white/70 dark:bg-yamagata-dark/70
+               backdrop-blur-xl border border-white/20 dark:border-yamagata-graphite/30
+               rounded-2xl shadow-premium;
+    }
+
+    .input-premium {
+        @apply w-full px-5 py-3.5 bg-yamagata-snow dark:bg-yamagata-charcoal
+               border border-yamagata-pearl dark:border-yamagata-graphite
+               rounded-xl text-yamagata-black dark:text-yamagata-pearl
+               placeholder-yamagata-silver dark:placeholder-yamagata-steel
+               focus:outline-none focus:ring-2 focus:ring-yamagata-red/30 focus:border-yamagata-red
+               transition-all duration-300;
+    }
+
+    .section-premium {
+        @apply py-20 md:py-28 lg:py-32;
+    }
+
+    .container-premium {
+        @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .text-gradient {
+        @apply bg-clip-text text-transparent bg-gradient-to-r from-yamagata-red via-yamagata-red-light to-yamagata-red;
+    }
+
+    .divider-premium {
+        @apply border-t border-yamagata-pearl/30 dark:border-yamagata-graphite/30;
+    }
+
+    .badge-premium {
+        @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold
+               bg-yamagata-red/10 text-yamagata-red dark:bg-yamagata-red/20;
+    }
+
+    .skeleton {
+        @apply animate-pulse bg-yamagata-pearl/50 dark:bg-yamagata-graphite/50 rounded;
+    }
+
+    .hover-lift {
+        @apply transition-all duration-500 ease-out hover:-translate-y-2 hover:shadow-premium-lg;
+    }
+
+    .glass-panel {
+        @apply bg-white/80 dark:bg-yamagata-dark/80 backdrop-blur-2xl
+               border border-white/10 dark:border-yamagata-graphite/20
+               rounded-2xl;
+    }
+}
+
+@layer utilities {
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .animate-in {
+        animation: fadeSlideIn 0.7s ease-out forwards;
+    }
+
+    @keyframes fadeSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    .stagger-5 { animation-delay: 0.5s; }
+    .stagger-6 { animation-delay: 0.6s; }
+}

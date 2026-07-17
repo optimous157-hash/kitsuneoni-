@@ -1,0 +1,16 @@
+{
+  "resources/css/app.css": {
+    "file": "assets/app-e6cfa7d8.css",
+    "src": "resources/css/app.css"
+  },
+  "resources/css/admin.css": {
+    "file": "assets/admin-a1b2c3d4.css",
+    "src": "resources/css/admin.css"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-4ed99dff.js",
+    "isEntry": true,
+    "src": "resources/js/app.js",
+    "css": ["assets/app-e6cfa7d8.css"]
+  }
+}

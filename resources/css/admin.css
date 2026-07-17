@@ -1,0 +1,68 @@
+/* Admin Panel Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .admin-sidebar {
+        @apply fixed inset-y-0 left-0 z-50 w-72 bg-yamagata-dark border-r border-yamagata-graphite/50
+               transform transition-transform duration-300 ease-in-out
+               lg:translate-x-0;
+    }
+
+    .admin-content {
+        @apply lg:pl-72 min-h-screen bg-yamagata-black;
+    }
+}
+
+@layer components {
+    .admin-card {
+        @apply bg-yamagata-dark border border-yamagata-graphite/50 rounded-2xl p-6;
+    }
+
+    .admin-stat {
+        @apply bg-yamagata-dark border border-yamagata-graphite/50 rounded-2xl p-6
+               hover:border-yamagata-red/30 transition-all duration-300;
+    }
+
+    .admin-table {
+        @apply w-full text-left border-collapse;
+    }
+
+    .admin-table th {
+        @apply px-6 py-4 text-xs font-semibold uppercase tracking-wider text-yamagata-silver
+               border-b border-yamagata-graphite/50;
+    }
+
+    .admin-table td {
+        @apply px-6 py-4 text-sm text-yamagata-mist border-b border-yamagata-graphite/30;
+    }
+
+    .admin-table tr:hover td {
+        @apply bg-yamagata-charcoal/50;
+    }
+
+    .admin-badge {
+        @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold;
+    }
+
+    .admin-badge-pending {
+        @apply admin-badge bg-yellow-500/10 text-yellow-400;
+    }
+
+    .admin-badge-confirmed {
+        @apply admin-badge bg-blue-500/10 text-blue-400;
+    }
+
+    .admin-badge-processing {
+        @apply admin-badge bg-purple-500/10 text-purple-400;
+    }
+
+    .admin-badge-delivered {
+        @apply admin-badge bg-green-500/10 text-green-400;
+    }
+
+    .admin-badge-cancelled {
+        @apply admin-badge bg-red-500/10 text-red-400;
+    }
+}
