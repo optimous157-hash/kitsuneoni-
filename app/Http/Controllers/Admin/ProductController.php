@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
 use App\Models\ProductImage;
+use App\Services\ImageCompressionService;
+use App\Services\ProductDataGenerator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -75,10 +77,9 @@ class ProductController extends Controller
             'weight' => 'nullable|integer',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-            'video_url' => 'nullable|string|max:500',
-            'video_file' => 'nullable|file|mimes:mp4,webm,ogg|max:51200',
             'images.*' => 'image|mimes:jpeg,png,webp|max:5120',
             'tags' => 'nullable|string',
+            'auto_fill' => 'nullable|boolean',
         ]);
 
         if (empty($validated['slug'])) {
@@ -88,25 +89,48 @@ class ProductController extends Controller
         $tags = $validated['tags'] ?? '';
         unset($validated['tags']);
 
+        $autoFill = $request->boolean('auto_fill');
+        unset($validated['auto_fill']);
+
         $validated['is_featured'] = $request->boolean('is_featured');
         $validated['is_bestseller'] = $request->boolean('is_bestseller');
         $validated['is_new'] = $request->boolean('is_new');
         $validated['is_active'] = $request->boolean('is_active');
         $validated['in_stock'] = $validated['stock'] > 0;
 
-        if ($request->hasFile('video_file')) {
-            $validated['video_file'] = $request->file('video_file')->store('products/videos', 'public');
+        if ($autoFill && !empty($validated['name'])) {
+            $generator = app(ProductDataGenerator::class);
+            $generated = $generator->generateFromName($validated['name']);
+            foreach ($generated as $key => $value) {
+                if (empty($validated[$key])) {
+                    $validated[$key] = $value;
+                }
+            }
+            if (empty($tags)) {
+                $tags = $generated['tags'] ?? '';
+            }
+            $specs = $generator->inferSpecsFromSimilar($validated['name']);
+            foreach ($specs as $key => $value) {
+                if (empty($validated[$key])) {
+                    $validated[$key] = $value;
+                }
+            }
         }
 
         $product = Product::create($validated);
 
         if ($request->hasFile('images')) {
+            $compressor = app(ImageCompressionService::class);
             $images = $request->file('images');
             foreach ($images as $index => $image) {
-                $path = $image->store('products', 'public');
+                $stored = $compressor->compressAndStore(
+                    $image,
+                    'products',
+                    $product->slug . '-' . ($index + 1)
+                );
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'path' => $path,
+                    'path' => $stored['webp'],
                     'alt_text' => $product->name,
                     'sort_order' => $index,
                     'is_primary' => $index === 0,
@@ -165,8 +189,6 @@ class ProductController extends Controller
             'weight' => 'nullable|integer',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
-            'video_url' => 'nullable|string|max:500',
-            'video_file' => 'nullable|file|mimes:mp4,webm,ogg|max:51200',
             'images.*' => 'image|mimes:jpeg,png,webp|max:5120',
             'tags' => 'nullable|string',
         ]);
@@ -184,28 +206,21 @@ class ProductController extends Controller
         $validated['is_active'] = $request->boolean('is_active');
         $validated['in_stock'] = $validated['stock'] > 0;
 
-        if ($request->hasFile('video_file')) {
-            if ($product->video_file) {
-                Storage::disk('public')->delete($product->video_file);
-            }
-            $validated['video_file'] = $request->file('video_file')->store('products/videos', 'public');
-        } elseif ($request->input('remove_video_file')) {
-            if ($product->video_file) {
-                Storage::disk('public')->delete($product->video_file);
-            }
-            $validated['video_file'] = null;
-        }
-
         $product->update($validated);
 
         if ($request->hasFile('images')) {
+            $compressor = app(ImageCompressionService::class);
             $images = $request->file('images');
             $existingCount = $product->images()->count();
             foreach ($images as $index => $image) {
-                $path = $image->store('products', 'public');
+                $stored = $compressor->compressAndStore(
+                    $image,
+                    'products',
+                    $product->slug . '-' . ($existingCount + $index + 1)
+                );
                 ProductImage::create([
                     'product_id' => $product->id,
-                    'path' => $path,
+                    'path' => $stored['webp'],
                     'alt_text' => $product->name,
                     'sort_order' => $existingCount + $index,
                     'is_primary' => false,
@@ -231,11 +246,9 @@ class ProductController extends Controller
     {
         foreach ($product->images as $image) {
             if (str_starts_with($image->path, 'products/')) {
-                Storage::disk('public')->delete($image->path);
+                $jpegPath = preg_replace('/\.webp$/', '.jpg', $image->path);
+                Storage::disk('public')->delete([$image->path, $jpegPath]);
             }
-        }
-        if ($product->video_file && !str_starts_with($product->video_file, 'http')) {
-            Storage::disk('public')->delete($product->video_file);
         }
         $product->delete();
         return redirect()->route('admin.products.index')
@@ -244,7 +257,8 @@ class ProductController extends Controller
 
     public function destroyImage(ProductImage $image)
     {
-        Storage::disk('public')->delete($image->path);
+        $jpegPath = preg_replace('/\.webp$/', '.jpg', $image->path);
+        Storage::disk('public')->delete([$image->path, $jpegPath]);
         $image->delete();
         if ($this->expectsJson() || request()->header('X-Requested-With') === 'XMLHttpRequest') {
             return response()->json(['success' => true]);

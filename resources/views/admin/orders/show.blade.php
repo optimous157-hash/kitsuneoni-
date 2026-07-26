@@ -66,7 +66,7 @@
                         @endif
                         <div class="flex-1">
                             <p class="text-white font-medium">{{ $item->product_name }}</p>
-                            <p class="text-sm text-yamagata-silver">Qty: {{ $item->quantity }} Ã— ${{ number_format($item->unit_price, 0) }}</p>
+                            <p class="text-sm text-yamagata-silver">Qty: {{ $item->quantity }} Ã  ${{ number_format($item->unit_price, 0) }}</p>
                             @if($item->variant)
                             <p class="text-xs text-yamagata-steel">Variant: {{ $item->variant }}</p>
                             @endif

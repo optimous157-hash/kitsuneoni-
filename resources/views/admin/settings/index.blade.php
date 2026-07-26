@@ -54,14 +54,7 @@
                     <label class="block text-sm font-medium text-yamagata-mist mb-1.5">Phone</label>
                     <input type="text" name="settings[contact_phone]" value="{{ old('settings.contact_phone', $settings['contact_phone'] ?? '') }}" class="input-premium">
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-yamagata-mist mb-1.5">Telegram</label>
-                    <input type="text" name="settings[telegram]" value="{{ old('settings.telegram', $settings['telegram'] ?? '@Yamagataaa') }}" class="input-premium">
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-yamagata-mist mb-1.5">WhatsApp</label>
-                    <input type="text" name="settings[whatsapp]" value="{{ old('settings.whatsapp', $settings['whatsapp'] ?? '') }}" class="input-premium">
-                </div>
+
             </div>
         </div>
 

@@ -247,59 +247,13 @@
                 </div>
 
                 <div class="admin-card">
-                    <h2 class="text-lg font-semibold text-white mb-4">Video</h2>
-                    <div class="space-y-4">
-                        <div
-                            class="relative border-2 border-dashed rounded-xl p-6 text-center transition-all duration-200 cursor-pointer"
-                            :class="videoDragOver ? 'border-yamagata-red bg-yamagata-red/5' : 'border-yamagata-graphite hover:border-yamagata-steel'"
-                            @dragover.prevent="videoDragOver = true"
-                            @dragleave.prevent="videoDragOver = false"
-                            @drop.prevent="videoDragOver = false; handleVideoDrop($event)"
-                            @click="$refs.videoInput.click()"
-                        >
-                            <input
-                                type="file"
-                                name="video_file"
-                                accept="video/mp4,video/webm,video/ogg"
-                                class="hidden"
-                                x-ref="videoInput"
-                                @change="handleVideoFile($event.target.files[0])"
-                            >
-                            <div class="space-y-2">
-                                <svg class="w-8 h-8 mx-auto text-yamagata-steel" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                </svg>
-                                <p class="text-sm text-yamagata-mist">
-                                    <span class="text-yamagata-red font-medium">Click to upload</span> or drag and drop
-                                </p>
-                                <p class="text-xs text-yamagata-steel">MP4, WebM, OGG - Max 50MB</p>
-                            </div>
+                    <label class="flex items-start gap-3 cursor-pointer">
+                        <input type="checkbox" name="auto_fill" value="1" {{ old('auto_fill') ? 'checked' : '' }} class="mt-1 w-4 h-4 rounded border-yamagata-graphite bg-yamagata-charcoal text-yamagata-red">
+                        <div>
+                            <span class="text-sm font-medium text-yamagata-mist">Auto-Fill Missing Data</span>
+                            <p class="text-xs text-yamagata-steel mt-1">Generates SEO content, specifications, and tags from the product name. Leaves existing fields unchanged.</p>
                         </div>
-
-                        <template x-if="videoPreview">
-                            <div class="relative rounded-lg overflow-hidden bg-yamagata-charcoal">
-                                <video :src="videoPreview" controls class="w-full max-h-48 object-contain"></video>
-                                <button
-                                    type="button"
-                                    @click.prevent="removeVideo()"
-                                    class="absolute top-2 right-2 p-1.5 bg-red-500/80 rounded-full hover:bg-red-500 transition-colors"
-                                >
-                                    <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                    </svg>
-                                </button>
-                                <div class="absolute bottom-0 left-0 right-0 px-2 py-1 bg-gradient-to-t from-black/80 to-transparent">
-                                    <p class="text-xs text-white truncate" x-text="videoName"></p>
-                                </div>
-                            </div>
-                        </template>
-                    </div>
-
-                    <div class="mt-4">
-                        <label class="block text-sm font-medium text-yamagata-mist mb-1">Or paste Video URL</label>
-                        <input type="url" name="video_url" value="{{ old('video_url') }}" class="input-premium" placeholder="https://youtube.com/watch?v=...">
-                        <p class="text-xs text-yamagata-steel mt-1">YouTube or Telegram video link. Optional.</p>
-                    </div>
+                    </label>
                 </div>
 
                 <button type="submit" class="btn-primary w-full text-center py-3.5">
@@ -315,9 +269,6 @@ function productForm() {
     return {
         previews: [],
         dragOver: false,
-        videoPreview: null,
-        videoName: '',
-        videoDragOver: false,
 
         handleFiles(files) {
             for (let i = 0; i < files.length; i++) {
@@ -337,26 +288,6 @@ function productForm() {
         removePreview(index) {
             URL.revokeObjectURL(this.previews[index].url);
             this.previews.splice(index, 1);
-        },
-
-        handleVideoFile(file) {
-            if (file && file.type.startsWith('video/')) {
-                if (this.videoPreview) URL.revokeObjectURL(this.videoPreview);
-                this.videoPreview = URL.createObjectURL(file);
-                this.videoName = file.name;
-            }
-        },
-
-        handleVideoDrop(event) {
-            const file = event.dataTransfer.files[0];
-            this.handleVideoFile(file);
-        },
-
-        removeVideo() {
-            URL.revokeObjectURL(this.videoPreview);
-            this.videoPreview = null;
-            this.videoName = '';
-            this.$refs.videoInput.value = '';
         }
     }
 }

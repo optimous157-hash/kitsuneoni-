@@ -18,15 +18,15 @@ class HomeController extends Controller
     {
         $featuredProducts = Product::active()->featured()->inStock()
             ->with(['images', 'category'])
-            ->limit(8)->get();
+            ->limit(4)->get();
 
         $bestsellers = Product::active()->bestsellers()->inStock()
             ->with(['images', 'category'])
-            ->limit(6)->get();
+            ->limit(4)->get();
 
         $newArrivals = Product::active()->new()->inStock()
             ->with(['images', 'category'])
-            ->limit(6)->get();
+            ->limit(3)->get();
 
         $categories = Category::active()->root()->ordered()
             ->withCount(['activeProducts as products_count'])

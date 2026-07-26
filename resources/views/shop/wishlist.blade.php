@@ -6,7 +6,7 @@
 @section('og_description', 'Save your favorite Kitsuneoni blades and collectibles to your wishlist.')
 
 @section('content')
-<section class="py-24 lg:py-32" x-data>
+<section class="py-16 md:py-24 lg:py-32" x-data>
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="mb-12">
             <p class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4">Your Collection</p>
@@ -41,7 +41,7 @@
                                 <span class="font-mono text-sm text-foreground mt-2 block" x-text="item.price"></span>
                             </div>
                         </a>
-                        <button @click="$store.wishlist.toggle(item)" class="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-background/60 backdrop-blur-md transition-all duration-300 hover:bg-background/90 hover:scale-110" aria-label="Remove from wishlist">
+                        <button @click="$store.wishlist.toggle(item)" class="absolute top-4 right-4 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-background/60 backdrop-blur-md transition-all duration-300 hover:bg-background/90 hover:scale-110" aria-label="Remove from wishlist">
                             <svg class="w-4 h-4 text-primary fill-primary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
                         </button>
                     </div>

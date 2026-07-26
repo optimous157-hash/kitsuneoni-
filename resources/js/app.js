@@ -3,7 +3,6 @@ import collapse from '@alpinejs/collapse';
 
 Alpine.plugin(collapse);
 window.Alpine = Alpine;
-Alpine.start();
 
 document.addEventListener('alpine:init', () => {
 
@@ -76,6 +75,8 @@ document.addEventListener('alpine:init', () => {
         }
     });
 });
+
+Alpine.start();
 
 document.addEventListener('DOMContentLoaded', () => {
     const observerOptions = {

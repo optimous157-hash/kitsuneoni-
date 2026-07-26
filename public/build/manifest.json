@@ -1,16 +1,25 @@
 {
-  "resources/css/app.css": {
-    "file": "assets/app-e6cfa7d8.css",
-    "src": "resources/css/app.css"
+  "_alpine-DdaDH_LP.js": {
+    "file": "assets/alpine-DdaDH_LP.js",
+    "name": "alpine"
   },
   "resources/css/admin.css": {
-    "file": "assets/admin-a1b2c3d4.css",
-    "src": "resources/css/admin.css"
+    "file": "assets/admin-BlqnjVW3.css",
+    "src": "resources/css/admin.css",
+    "isEntry": true
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-BaY7sylu.css",
+    "src": "resources/css/app.css",
+    "isEntry": true
   },
   "resources/js/app.js": {
-    "file": "assets/app-4ed99dff.js",
-    "isEntry": true,
+    "file": "assets/app-BDJyRds7.js",
+    "name": "app",
     "src": "resources/js/app.js",
-    "css": ["assets/app-e6cfa7d8.css"]
+    "isEntry": true,
+    "imports": [
+      "_alpine-DdaDH_LP.js"
+    ]
   }
 }

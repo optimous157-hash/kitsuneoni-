@@ -26,11 +26,6 @@
         <changefreq>monthly</changefreq>
     </url>
     <url>
-        <loc>{{ route('shipping') }}</loc>
-        <priority>0.6</priority>
-        <changefreq>monthly</changefreq>
-    </url>
-    <url>
         <loc>{{ route('loyalty') }}</loc>
         <priority>0.5</priority>
         <changefreq>monthly</changefreq>

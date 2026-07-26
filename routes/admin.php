@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\NewsletterController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContentController;
+use App\Http\Controllers\Admin\ContactController;
 
 Route::prefix('admin')->name('admin.')->middleware('web')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
@@ -40,6 +41,10 @@ Route::prefix('admin')->name('admin.')->middleware('web')->group(function () {
         Route::post('/reviews/{review}/reject', [ReviewController::class, 'reject'])->name('reviews.reject');
         Route::post('/reviews/{review}/feature', [ReviewController::class, 'toggleFeatured'])->name('reviews.feature');
         Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+
+        Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
+        Route::get('/contacts/{contact}', [ContactController::class, 'show'])->name('contacts.show');
+        Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
 
         Route::get('/newsletter', [NewsletterController::class, 'index'])->name('newsletter.index');
         Route::delete('/newsletter/{subscriber}', [NewsletterController::class, 'destroy'])->name('newsletter.destroy');

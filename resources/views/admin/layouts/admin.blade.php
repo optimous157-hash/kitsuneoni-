@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>@yield('title', 'Admin') — Kitsuneoni</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -83,9 +85,9 @@
             <!-- Logo -->
             <div class="p-5 border-b border-yamagata-graphite/40">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3">
-                    <div class="w-9 h-9 bg-yamagata-red rounded-xl flex items-center justify-center shadow-lg shadow-yamagata-red/20">
-                        <span class="text-white font-bold font-japanese text-sm">鬼</span>
-                    </div>
+                    <img src="{{ asset('storage/brand/logo.png') }}" srcset="{{ asset('storage/brand/logo@2x.png') }} 2x"
+                         width="512" height="512" alt="Kitsuneoni" class="object-contain"
+                         style="width:36px;height:36px;filter: drop-shadow(0 0 6px rgba(201,168,76,0.25));">
                     <div class="flex items-baseline gap-1.5">
                         <span class="text-sm font-display font-bold text-white tracking-wide">KITSUNEONI</span>
                         <span class="text-[10px] font-medium text-yamagata-red tracking-widest uppercase">Admin</span>
@@ -134,6 +136,11 @@
                 <a href="{{ route('admin.reviews.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.reviews.*') ? 'bg-yamagata-red/10 text-yamagata-red' : 'text-yamagata-silver hover:text-white hover:bg-white/[0.03]' }}">
                     <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
                     Reviews
+                </a>
+
+                <a href="{{ route('admin.contacts.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 {{ request()->routeIs('admin.contacts.*') ? 'bg-yamagata-red/10 text-yamagata-red' : 'text-yamagata-silver hover:text-white hover:bg-white/[0.03]' }}">
+                    <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    Contact Messages
                 </a>
 
                 <div class="pt-4 pb-1.5 px-3">

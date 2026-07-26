@@ -34,10 +34,11 @@ class HomePageTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function test_shipping_page_returns_ok(): void
+    public function test_shipping_page_redirects_to_faq(): void
     {
         $response = $this->get('/shipping');
-        $response->assertStatus(200);
+        $response->assertStatus(301);
+        $response->assertRedirect(route('faq'));
     }
 
     public function test_loyalty_page_returns_ok(): void

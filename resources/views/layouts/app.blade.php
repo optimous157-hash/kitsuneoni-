@@ -6,6 +6,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#0A0A0B">
 
+    <!-- Favicons / PWA icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ asset('images/favicon-48x48.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('site.webmanifest') }}">
+    <meta name="apple-mobile-web-app-title" content="Kitsuneoni">
+
     <title>@yield('title', config('site.seo.title'))</title>
     <meta name="description" content="@yield('description', config('site.seo.description'))">
     <meta name="keywords" content="@yield('keywords', config('site.seo.keywords'))">
@@ -26,11 +34,13 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:site" content="@Yamagataaa">
-    <meta name="twitter:creator" content="@Yamagataaa">
+    <meta name="twitter:site" content="@katana_oni">
+    <meta name="twitter:creator" content="@katana_oni">
     <meta name="twitter:title" content="@yield('og_title', config('site.seo.title'))">
     <meta name="twitter:description" content="@yield('og_description', config('site.seo.description'))">
     <meta name="twitter:image" content="@yield('og_image', config('site.seo.og_image'))">
+
+    <style>[x-cloak] { display: none !important; }</style>
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -39,6 +49,8 @@
         "@@type": "Organization",
         "name": "Kitsuneoni",
         "url": "{{ url('/') }}",
+        "logo": "{{ asset('storage/brand/logo@2x.png') }}",
+        "image": "{{ asset('storage/brand/logo@2x.png') }}",
         "description": "{{ config('site.seo.description') }}",
         "contactPoint": {
             "@type": "ContactPoint",
@@ -148,6 +160,30 @@
                 clear() { this.items = []; this.save(); },
                 save() { localStorage.setItem('cart', JSON.stringify(this.items)); }
             });
+
+            Alpine.data('countrySelect', ({ old: oldValue, countries }) => ({
+                open: false,
+                query: '',
+                selected: oldValue || '',
+                all: countries || [],
+                get filtered() {
+                    const q = this.query.trim().toLowerCase();
+                    if (!q) return this.all;
+                    return this.all.filter(c => c.toLowerCase().includes(q));
+                },
+                select(country) {
+                    this.selected = country;
+                    this.query = '';
+                    this.open = false;
+                    Alpine.store('shipping').country = country;
+                    Alpine.store('shipping').city = '';
+                }
+            }));
+
+            Alpine.store('shipping', {
+                country: {{ Js::from(old('customer_country')) }},
+                city: {{ Js::from(old('customer_city')) }},
+            });
         });
     </script>
     <style>
@@ -178,6 +214,33 @@
 
         * { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         html { scroll-behavior: smooth; }
+        body { width: 100%; }
+        #page-wrapper { width: 100%; }
+
+        /* Brand logo: explicit sizing so it never collapses on mobile; crisp on any theme */
+        .brand-logo {
+            width: auto;
+            height: 40px;
+            max-width: 150px;
+            display: block;
+            image-rendering: -webkit-optimize-contrast;
+        }
+        @media (min-width: 640px) { .brand-logo { height: 46px; } }
+        /* Theme-aware logo swap: bright gold on dark, deep bronze on light.
+           Each variant is authored to be equally vivid on its background. */
+        .brand-logo-light { display: none; }
+        .brand-logo-dark  { display: block; }
+        .dark .brand-logo-light { display: none; }
+        .dark .brand-logo-dark  { display: block; }
+        html:not(.dark) .brand-logo-light { display: block; }
+        html:not(.dark) .brand-logo-dark  { display: none; }
+        /* Subtle depth in dark mode only */
+        .dark .brand-logo-dark {
+            filter: drop-shadow(0 0 6px rgba(201, 168, 76, 0.25)) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.4));
+        }
+        html:not(.dark) .brand-logo-light {
+            filter: drop-shadow(0 1px 2px rgba(40, 26, 8, 0.25));
+        }
         ::selection { background: hsl(var(--primary) / 0.2); color: hsl(var(--primary)); }
         .dark ::selection { background: hsl(var(--primary) / 0.3); color: #fff; }
         ::-webkit-scrollbar { width: 6px; }
@@ -275,22 +338,25 @@
 
     @yield('head')
 </head>
-<body class="bg-background text-foreground antialiased min-h-screen flex flex-col" x-data="{ loading: true }" x-init="window.addEventListener('load', () => setTimeout(() => loading = false, 800))">
+<body class="bg-background text-foreground antialiased min-h-screen flex flex-col" x-data="{ loading: true }" x-init="setTimeout(() => loading = false, 3000); window.addEventListener('load', () => setTimeout(() => loading = false, 800))">
 
     {{-- Page Loader --}}
-    <div x-show="loading" x-transition:leave="transition-opacity duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background">
+    <div id="page-loader" x-show="loading" x-transition:leave="transition-opacity duration-500" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-background">
         <div class="relative flex flex-col items-center">
-            {{-- Animated katana icon --}}
-            <div class="relative w-16 h-32 mb-8">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <svg class="w-8 h-24 text-primary" viewBox="0 0 24 80" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M12 0 L4 80 L12 70 L20 80 Z" stroke-linecap="round" stroke-linejoin="round"/>
-                        <line x1="12" y1="0" x2="12" y2="75" stroke-width="1" opacity="0.3"/>
-                    </svg>
-                </div>
-                <div class="absolute inset-0 flex items-center justify-center overflow-hidden">
-                    <div class="w-16 h-full bg-gradient-to-b from-transparent via-primary/20 to-transparent animate-sword-swipe"></div>
-                </div>
+            {{-- Brand logo --}}
+            <div class="relative mb-7">
+                <picture>
+                    <source type="image/webp" srcset="{{ asset('storage/brand/logo.webp') }} 1x, {{ asset('storage/brand/logo@2x.webp') }} 2x">
+                    <img src="{{ asset('storage/brand/logo.png') }}" width="512" height="512"
+                         alt="Kitsuneoni" class="brand-logo brand-logo-dark w-auto object-contain animate-pulse"
+                         style="height:80px;max-width:none;">
+                </picture>
+                <picture>
+                    <source type="image/webp" srcset="{{ asset('storage/brand/logo-light.webp') }} 1x, {{ asset('storage/brand/logo-light@2x.webp') }} 2x">
+                    <img src="{{ asset('storage/brand/logo-light.png') }}" width="512" height="512"
+                         alt="Kitsuneoni" class="brand-logo brand-logo-light w-auto object-contain animate-pulse"
+                         style="height:80px;max-width:none;">
+                </picture>
             </div>
             {{-- Brand name --}}
             <div class="flex flex-col items-center leading-none mb-6">
@@ -298,7 +364,7 @@
                 <span class="font-heading text-[10px] tracking-[0.6em] text-primary mt-2">— ONI —</span>
             </div>
             {{-- Loading bar --}}
-            <div class="w-48 h-px bg-border relative overflow-hidden rounded-full">
+            <div class="w-64 sm:w-80 max-w-[80vw] h-[2px] bg-border relative overflow-hidden rounded-full">
                 <div class="absolute inset-0 bg-primary animate-loader-bar"></div>
             </div>
             <p class="text-[10px] tracking-[0.3em] uppercase text-muted-foreground mt-4 animate-pulse">Forging steel...</p>
@@ -310,32 +376,53 @@
             .animate-loader-bar { animation: loader-bar 1.5s ease-in-out infinite; }
         </style>
     </div>
+    <script>
+        (function () {
+            var hide = function () {
+                var l = document.getElementById('page-loader');
+                if (l) { l.style.opacity = '0'; setTimeout(function () { l.style.display = 'none'; }, 500); }
+            };
+            window.addEventListener('load', function () { setTimeout(hide, 800); });
+            setTimeout(hide, 3500);
+        })();
+    </script>
 
     <!-- Navigation -->
     <header x-data="{ scrolled: false, mobileMenuOpen: false, searchOpen: false }"
             x-init="window.addEventListener('scroll', () => { scrolled = window.scrollY > 20 })"
             class="fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b"
-            :class="scrolled ? 'glass-nav border-border/50' : 'bg-transparent border-transparent'"
+            :class="scrolled || mobileMenuOpen ? 'glass-nav border-border/50' : 'bg-transparent border-transparent'"
             id="main-nav">
 
         <nav class="max-w-[1440px] mx-auto px-6 lg:px-12">
             <div class="flex items-center justify-between h-20">
-                <!-- Logo (Stacked) -->
-                <a href="{{ route('home') }}" class="flex flex-col leading-none group" aria-label="Kitsuneoni Home">
-                    <span class="font-heading text-2xl font-light tracking-[0.25em] group-hover:text-primary transition-colors text-foreground">
-                        KITSUNE
-                    </span>
-                    <span class="font-heading text-[10px] tracking-[0.5em] text-primary mt-0.5">
-                        — ONI —
-                    </span>
+                <!-- Logo -->
+                <a href="{{ route('home') }}" class="flex items-center group" aria-label="Kitsuneoni — Home">
+                    <picture>
+                        <source type="image/webp" srcset="{{ asset('storage/brand/logo.webp') }} 1x, {{ asset('storage/brand/logo@2x.webp') }} 2x">
+                        <img src="{{ asset('storage/brand/logo.png') }}"
+                             srcset="{{ asset('storage/brand/logo@2x.png') }} 2x"
+                             width="512" height="512" fetchpriority="high"
+                             alt="Kitsuneoni — Handcrafted Japanese Blades & Collectibles"
+                             class="brand-logo brand-logo-dark w-auto object-contain transition-transform duration-500 group-hover:scale-[1.04]">
+                    </picture>
+                    <picture>
+                        <source type="image/webp" srcset="{{ asset('storage/brand/logo-light.webp') }} 1x, {{ asset('storage/brand/logo-light@2x.webp') }} 2x">
+                        <img src="{{ asset('storage/brand/logo-light.png') }}"
+                             srcset="{{ asset('storage/brand/logo-light@2x.png') }} 2x"
+                             width="512" height="512" fetchpriority="high"
+                             alt="Kitsuneoni — Handcrafted Japanese Blades & Collectibles"
+                             class="brand-logo brand-logo-light w-auto object-contain transition-transform duration-500 group-hover:scale-[1.04]">
+                    </picture>
                 </a>
 
                 <!-- Desktop Navigation (centered) -->
-                <div class="hidden lg:flex items-center gap-10 absolute left-1/2 -translate-x-1/2">
+                <div class="hidden lg:flex items-center gap-6 xl:gap-10 absolute left-1/2 -translate-x-1/2">
                     <a href="{{ route('home') }}" class="text-[13px] tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 {{ request()->routeIs('home') ? 'text-foreground' : '' }}">Home</a>
                     <a href="{{ route('shop.index') }}" class="text-[13px] tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 {{ request()->routeIs('shop.*') ? 'text-foreground' : '' }}">Shop</a>
                     <a href="{{ route('about') }}" class="text-[13px] tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 {{ request()->routeIs('about') ? 'text-foreground' : '' }}">About</a>
                     <a href="{{ route('loyalty') }}" class="text-[13px] tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 {{ request()->routeIs('loyalty') ? 'text-foreground' : '' }}">Loyalty</a>
+                    <a href="{{ route('contact') }}" class="text-[13px] tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 {{ request()->routeIs('contact') ? 'text-foreground' : '' }}">Contact</a>
                     <a href="{{ route('faq') }}" class="text-[13px] tracking-wide uppercase text-muted-foreground hover:text-foreground transition-colors duration-300 {{ request()->routeIs('faq') ? 'text-foreground' : '' }}">FAQ</a>
                 </div>
 
@@ -359,14 +446,15 @@
                     </button>
 
                     <!-- Order Now CTA -->
-                    <a href="{{ route('order.create') }}" class="hidden sm:inline-flex items-center gap-2 bg-[#c41e3a] text-white px-6 py-2.5 text-[11px] tracking-[0.3em] uppercase font-semibold rounded-lg shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
-                        Order Now
+                    <a href="{{ route('order.create') }}" class="inline-flex items-center gap-2 bg-[#c41e3a] text-white px-3 sm:px-6 py-2.5 text-[11px] tracking-[0.3em] uppercase font-semibold rounded-lg shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300">
+                        <svg class="w-4 h-4 sm:hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25 5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z"/></svg>
+                        <span class="hidden sm:inline">Order Now</span>
                     </a>
 
                     <!-- Mobile Menu Toggle -->
-                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden text-muted-foreground hover:text-foreground transition-colors" aria-label="Menu">
-                        <svg x-show="!mobileMenuOpen" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-                        <svg x-show="mobileMenuOpen" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden flex items-center justify-center w-11 h-11 bg-[#c41e3a] text-white rounded-lg hover:bg-[#9b1830] transition-all shadow-[0_0_15px_rgba(196,30,58,0.3)]" aria-label="Menu">
+                        <svg x-show="!mobileMenuOpen" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+                        <svg x-show="mobileMenuOpen" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                     </button>
                 </div>
             </div>
@@ -406,19 +494,13 @@
             </div>
         </div>
 
-        <!-- Mobile Menu (full-screen overlay) -->
-        <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-[60] bg-background lg:hidden" x-cloak>
-            <div class="flex items-center justify-between h-20 px-6 border-b border-border">
-                <span class="font-heading text-2xl font-light tracking-[0.25em] text-foreground">KITSUNEONI</span>
-                <button @click="mobileMenuOpen = false" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="Close menu">
-                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-                </button>
-            </div>
-            <div class="px-6 py-12 space-y-0">
-                @foreach([['Home', route('home')], ['Shop', route('shop.index')], ['About', route('about')], ['Loyalty', route('loyalty')], ['FAQ', route('faq')], ['Wishlist', route('wishlist')], ['Order Now', route('order.create')]] as [$label, $url])
-                <a href="{{ $url }}" class="flex items-center justify-between border-b border-border py-5 group">
-                    <span class="font-heading text-3xl font-light text-foreground group-hover:text-primary transition-colors">{{ $label }}</span>
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-muted-foreground"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        <!-- Mobile Menu (sticky dropdown below nav) -->
+        <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-4" class="absolute top-full left-0 right-0 bg-background border-b border-border lg:hidden shadow-xl max-h-[calc(100vh-5rem)] overflow-y-auto" x-cloak>
+            <div class="px-6 py-6 space-y-0">
+                @foreach([['Home', route('home')], ['Shop', route('shop.index')], ['About', route('about')], ['Contact', route('contact')], ['Loyalty', route('loyalty')], ['FAQ', route('faq')], ['Wishlist', route('wishlist')], ['Order Now', route('order.create')]] as [$label, $url])
+                <a href="{{ $url }}" @click="mobileMenuOpen = false" class="flex items-center justify-between border-b border-border py-5 group">
+                    <span class="font-heading text-2xl font-light text-foreground group-hover:text-primary transition-colors">{{ $label }}</span>
+                    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-muted-foreground"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </a>
                 @endforeach
             </div>
@@ -429,21 +511,21 @@
     <div class="h-20 shrink-0"></div>
 
     <!-- Main Content -->
-    <main class="flex-1">
+    <main class="flex-1" id="page-wrapper">
         @yield('content')
     </main>
 
     <!-- Footer -->
     <footer class="bg-card border-t border-border">
         <!-- Newsletter Section -->
-        <div class="max-w-[1440px] mx-auto px-6 lg:px-12 py-24 border-b border-border">
+        <div class="max-w-[1440px] mx-auto px-6 lg:px-12 py-16 sm:py-24 border-b border-border">
             <div class="max-w-2xl mx-auto text-center">
                 <p class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4">Stay Connected</p>
                 <h2 class="font-heading text-4xl lg:text-5xl font-light mb-4 text-balance text-foreground">Join the inner circle</h2>
                 <p class="text-muted-foreground text-sm mb-8 leading-relaxed">Be the first to know about new arrivals, exclusive pieces, and private commissions. No noise &mdash; only steel.</p>
-                <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex gap-3 max-w-md mx-auto" x-data="{ loading: false }" @submit="loading = true">
+                <form action="{{ route('newsletter.subscribe') }}" method="POST" class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" x-data="{ loading: false }" @submit="loading = true">
                     @csrf
-                    <input type="email" name="email" required placeholder="Enter your email" class="flex-1 px-5 py-3.5 bg-muted border border-border rounded-none text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-all">
+                    <input type="email" name="email" required placeholder="Enter your email" class="w-full sm:flex-1 px-5 py-3.5 bg-muted border border-border rounded-none text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-all">
                     <button type="submit" :disabled="loading" class="px-6 py-3.5 bg-[#c41e3a] text-white text-[11px] tracking-[0.3em] uppercase font-semibold rounded-lg shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 disabled:opacity-50 shrink-0">
                         <span x-show="!loading">Subscribe</span>
                         <svg x-show="loading" class="animate-spin h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
@@ -454,23 +536,31 @@
 
         <!-- Footer Links Grid -->
         <div class="max-w-[1440px] mx-auto px-6 lg:px-12 py-16">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-12">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-12">
                 <!-- Brand -->
                 <div class="col-span-2 lg:col-span-1">
-                    <a href="{{ route('home') }}" class="flex flex-col leading-none mb-6 group">
-                        <span class="font-heading text-2xl font-light tracking-[0.25em] group-hover:text-primary transition-colors text-foreground">KITSUNE</span>
-                        <span class="font-heading text-[10px] tracking-[0.5em] text-primary mt-0.5">— ONI —</span>
+                    <a href="{{ route('home') }}" class="block mb-6 group" aria-label="Kitsuneoni — Home">
+                        <picture>
+                            <source type="image/webp" srcset="{{ asset('storage/brand/logo.webp') }} 1x, {{ asset('storage/brand/logo@2x.webp') }} 2x">
+                            <img src="{{ asset('storage/brand/logo.png') }}"
+                                 srcset="{{ asset('storage/brand/logo@2x.png') }} 2x"
+                                 width="512" height="512" loading="lazy"
+                                 alt="Kitsuneoni — Handcrafted Japanese Blades & Collectibles"
+                                 class="brand-logo brand-logo-dark w-auto object-contain transition-transform duration-500 group-hover:scale-[1.04]">
+                        </picture>
+                        <picture>
+                            <source type="image/webp" srcset="{{ asset('storage/brand/logo-light.webp') }} 1x, {{ asset('storage/brand/logo-light@2x.webp') }} 2x">
+                            <img src="{{ asset('storage/brand/logo-light.png') }}"
+                                 srcset="{{ asset('storage/brand/logo-light@2x.png') }} 2x"
+                                 width="512" height="512" loading="lazy"
+                                 alt="Kitsuneoni — Handcrafted Japanese Blades & Collectibles"
+                                 class="brand-logo brand-logo-light w-auto object-contain transition-transform duration-500 group-hover:scale-[1.04]">
+                        </picture>
                     </a>
-                    <p class="text-sm text-muted-foreground leading-relaxed max-w-xs">Handcrafted Japanese blades for the modern collector. Each piece forged by hand. Shipped worldwide.</p>
+                    <p class="text-sm text-muted-foreground leading-relaxed max-w-xs">Japanese blades, made the old way. No shortcuts, just fire and steel.</p>
                     <div class="flex gap-3 mt-6">
-                        <a href="{{ config('site.contact.telegram') }}" target="_blank" class="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-primary transition-all" aria-label="Telegram">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                        </a>
-                        <a href="{{ config('site.contact.instagram') }}" target="_blank" class="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-primary transition-all" aria-label="Instagram">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                        </a>
-                        <a href="{{ config('site.contact.whatsapp') }}" target="_blank" class="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-primary transition-all" aria-label="WhatsApp">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                        <a href="mailto:{{ config('site.contact.email') }}" class="w-10 h-10 flex items-center justify-center border border-border rounded-full text-muted-foreground hover:text-foreground hover:border-primary transition-all" aria-label="Email">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         </a>
                     </div>
                 </div>
@@ -491,7 +581,7 @@
                     <ul class="space-y-3">
                         <li><a href="{{ route('about') }}" class="text-sm hover:text-primary transition-colors text-foreground">About Us</a></li>
                         <li><a href="{{ route('faq') }}" class="text-sm hover:text-primary transition-colors text-foreground">FAQ</a></li>
-                        <li><a href="{{ config('site.contact.telegram') }}" target="_blank" class="text-sm hover:text-primary transition-colors text-foreground">Contact</a></li>
+                        <li><a href="{{ route('contact') }}" class="text-sm hover:text-primary transition-colors text-foreground">Contact</a></li>
                     </ul>
                 </div>
 
@@ -499,9 +589,9 @@
                 <div>
                     <h3 class="text-[11px] tracking-[0.3em] uppercase text-muted-foreground mb-5">Support</h3>
                     <ul class="space-y-3">
-                        <li><a href="{{ route('shop.index') }}" class="text-sm hover:text-primary transition-colors text-foreground">Shipping Info</a></li>
+                        <li><a href="{{ route('faq') }}" class="text-sm hover:text-primary transition-colors text-foreground">Shipping Info</a></li>
                         <li><a href="{{ route('order.create') }}" class="text-sm hover:text-primary transition-colors text-foreground">Order Process</a></li>
-                        <li><a href="{{ config('site.contact.telegram') }}" target="_blank" class="text-sm hover:text-primary transition-colors text-foreground">Live Chat</a></li>
+                        <li><a href="{{ route('contact') }}" class="text-sm hover:text-primary transition-colors text-foreground">Contact Us</a></li>
                         <li><a href="{{ route('loyalty') }}" class="text-sm hover:text-primary transition-colors text-foreground">Loyalty Program</a></li>
                     </ul>
                 </div>
@@ -511,7 +601,7 @@
         <!-- Copyright Bar -->
         <div class="border-t border-border">
             <div class="max-w-[1440px] mx-auto px-6 lg:px-12 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <p class="text-xs text-muted-foreground tracking-wide">&copy; {{ date('Y') }} Kitsuneoni. All rights reserved.</p>
+                <p class="text-xs text-muted-foreground tracking-wide">&copy; Kitsuneoni. All rights reserved.</p>
                 <p class="text-xs text-muted-foreground tracking-wide font-mono">Forged by hand. Delivered worldwide.</p>
             </div>
         </div>

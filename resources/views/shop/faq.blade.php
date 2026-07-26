@@ -29,24 +29,24 @@
         {
           "id": "o1",
           "q": "How do I place an order?",
-          "a": "Click \"Order Now\" on any product page or visit our order page. Fill in your details and submit — we'll confirm via email or Telegram/WhatsApp within 24 hours.",
+          "a": "Hit \"Order Now\" on any product page, fill out the form, and we'll get back to you within 24 hours. That's it.",
           "link": {"text": "order page", "url": "/order"}
         },
         {
           "id": "o2",
           "q": "Can I order a custom piece?",
-          "a": "Absolutely. Contact us via Telegram @Yamagataaa or WhatsApp with your vision. We'll discuss materials, dimensions, and pricing before starting.",
-          "link": {"text": "@Yamagataaa", "url": "https://t.me/Yamagataaa"}
+          "a": "Sure. Shoot us an email with what you have in mind — materials, style, size. We'll figure out the rest together.",
+          "link": {"text": "orders@kitsuneoni.com", "url": "mailto:orders@kitsuneoni.com"}
         },
         {
           "id": "o3",
           "q": "What information do I need to provide?",
-          "a": "Your full name, email, shipping address, and preferred contact method (Telegram or WhatsApp). For custom orders, include a description or reference images of what you want."
+          "a": "Name, email, shipping address. If it's a custom piece, tell us what you want and send reference pics if you have them."
         },
         {
           "id": "o4",
           "q": "Can I modify or cancel my order?",
-          "a": "Contact us as soon as possible via Telegram or email. Orders that haven't entered production can be modified or cancelled. Once forging begins, changes may not be possible."
+          "a": "Email us right away. If we haven't started on it yet, we can change or cancel it. Once the steel hits the anvil, it's locked in."
         }
       ]
     },
@@ -58,7 +58,7 @@
         {
           "id": "s1",
           "q": "How long does shipping take?",
-          "a": "Delivery times vary by region: CIS countries 3–7 business days, Europe & Americas 7–21 business days, Australia & Africa 10–25 business days. All shipments via DHL or UPS with full tracking.",
+          "a": "Depends where you are. CIS: 3-7 days. Europe & Americas: 7-21 days. Australia & Africa: 10-25 days. All tracked via DHL or UPS.",
           "table": [
             {"label": "CIS countries", "value": "3–7 business days"},
             {"label": "Europe & Americas", "value": "7–21 business days"},
@@ -68,22 +68,22 @@
         {
           "id": "s2",
           "q": "Do you ship worldwide?",
-          "a": "Yes. We ship to over 40 countries worldwide. If your country isn't listed at checkout, contact us via Telegram and we'll arrange delivery."
+          "a": "Yeah, we ship to about 40 countries. If yours isn't on the list, email us and we'll figure it out."
         },
         {
           "id": "s3",
           "q": "How is my order packaged?",
-          "a": "Every piece comes in a premium gift case, securely wrapped for international transit. We use custom-fitted packaging to ensure your collectible arrives in perfect condition."
+          "a": "Comes in a gift case, wrapped tight. We pack it like we'd want to receive it."
         },
         {
           "id": "s4",
           "q": "Can I track my order?",
-          "a": "Yes. Once shipped, you'll receive a tracking number via email and Telegram/WhatsApp. You can track your package in real-time via the carrier's website."
+          "a": "Yep. Once it's shipped, we email you the tracking number. You can follow it the whole way."
         },
         {
           "id": "s5",
           "q": "What if my order arrives damaged?",
-          "a": "Contact us immediately with photos. We'll arrange a replacement or full refund. All shipments are insured against damage during transit."
+          "a": "Send us photos right away. We'll replace it or refund you. Everything's insured, so no worries."
         }
       ]
     },
@@ -95,12 +95,12 @@
         {
           "id": "p1",
           "q": "Are the products truly handmade?",
-          "a": "Yes. Every piece is handcrafted in our workshop. Slight variations in finish and detail are natural and confirm authenticity — no two pieces are exactly alike."
+          "a": "Yes, every piece is made by hand in our workshop. That means no two are identical — the small variations are how you know it's real."
         },
         {
           "id": "p2",
           "q": "What materials do you use?",
-          "a": "We use 1045 high-carbon steel for blades, premium hardwoods (oak, zebrawood, ebony) for handles, full-grain vegetable-tanned leather for sheaths, and hand-poured custom epoxy resin for accents.",
+          "a": "1045 high-carbon steel for the blade. Oak, zebrawood, or ebony for the handle. Vegetable-tanned leather for the sheath. Hand-poured epoxy for accents.",
           "table": [
             {"label": "Blades", "value": "1045 high-carbon steel"},
             {"label": "Handles", "value": "Oak, zebrawood, ebony"},
@@ -111,17 +111,17 @@
         {
           "id": "p3",
           "q": "Are the katanas functional or decorative?",
-          "a": "Our katanas are collector-grade pieces. While crafted with traditional techniques and sharp blades, they are intended as collectibles and display pieces. We recommend following local regulations regarding blade ownership."
+          "a": "They're made with real steel and real techniques, but they're collectibles — not weapons. Check your local laws before ordering."
         },
         {
           "id": "p4",
           "q": "Do you offer a warranty?",
-          "a": "We stand behind our craftsmanship. If a product has a manufacturing defect, we'll repair or replace it. Normal wear and damage from misuse are not covered."
+          "a": "If it's our fault, we'll fix it or replace it. Normal wear and tear or misuse — that's on you."
         },
         {
           "id": "p5",
           "q": "How should I care for my piece?",
-          "a": "Keep blades clean and lightly oiled. Store in the provided case away from humidity. Leather sheaths benefit from occasional conditioning. Detailed care instructions are included with every order."
+          "a": "Keep it clean, keep it oiled, store it in the case. Leather sheath? Condition it now and then. Full instructions come with your order."
         }
       ]
     },
@@ -133,22 +133,22 @@
         {
           "id": "y1",
           "q": "What payment methods do you accept?",
-          "a": "We use a manual order system. After placing your order, we'll confirm payment details via Telegram or WhatsApp. We accept bank transfers, PayPal, and cryptocurrency."
+          "a": "We do things manually. After you order, we email you the payment info. Bank transfer, PayPal, crypto — whatever works."
         },
         {
           "id": "y2",
           "q": "Do I pay upfront?",
-          "a": "For standard orders, full payment is required before production begins. For custom commissions over $500, we offer a 50/50 split — half upfront, half before shipping."
+          "a": "For standard orders, full payment is required before packaging begins. For custom commissions over $500, we offer a 50/50 split — half upfront, half before shipping."
         },
         {
           "id": "y3",
           "q": "Is my payment secure?",
-          "a": "All transactions are handled through secure, verified channels. We never store payment details. If you have concerns, we're happy to verify our identity via video call."
+          "a": "We use trusted payment channels and don't store your card details. If you're unsure, we can hop on a video call to verify."
         },
         {
           "id": "y4",
           "q": "Do you offer refunds?",
-          "a": "If we can't fulfill your order, we offer a full refund. Custom pieces that match the agreed specifications are non-refundable. Damaged-in-transit items are replaced at no cost."
+          "a": "If we can't deliver, you get your money back. Custom pieces made to your specs can't be refunded. If it arrives damaged, we replace it free."
         }
       ]
     }
@@ -188,7 +188,7 @@ function faqPage() {
 </script>
 
 {{-- HERO --}}
-<section class="relative py-24 lg:py-32 bg-background overflow-hidden">
+<section class="relative py-16 md:py-24 lg:py-32 bg-background overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-primary/[0.07]"></div>
     <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] opacity-20" style="background: radial-gradient(ellipse at center top, rgba(196,30,58,0.4) 0%, transparent 70%);"></div>
     <div class="relative z-10 max-w-[1440px] mx-auto px-6 lg:px-12 text-center">
@@ -199,7 +199,7 @@ function faqPage() {
 </section>
 
 {{-- FAQ CONTENT --}}
-<section class="py-24 lg:py-32 bg-background border-t border-border" x-data="faqPage()">
+<section class="py-16 md:py-24 lg:py-32 bg-background border-t border-border" x-data="faqPage()">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12 max-w-4xl">
 
         {{-- Category Tabs --}}
@@ -266,17 +266,9 @@ function faqPage() {
             <div class="relative z-10 px-8 py-16 text-center">
                 <span class="font-japanese text-5xl text-primary/15 block mb-5">鬼</span>
                 <h3 class="font-heading text-4xl lg:text-5xl font-light text-foreground mb-3">Still Have Questions?</h3>
-                <p class="text-sm text-muted-foreground mb-10 max-w-md mx-auto leading-relaxed">Our team responds within hours. Reach out through any channel — we're ready to help.</p>
+                <p class="text-sm text-muted-foreground mb-10 max-w-md mx-auto leading-relaxed">We usually reply within a few hours. Drop us a message and we'll get back to you.</p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-                    <a href="https://t.me/Yamagataaa" target="_blank" rel="noopener" class="bg-[#c41e3a] text-white px-8 py-4 text-[11px] tracking-[0.3em] uppercase font-semibold rounded-xl shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
-                        Telegram
-                    </a>
-                    <a href="https://wa.me/YamagataOni" target="_blank" rel="noopener" class="border border-border text-foreground px-8 py-4 text-[11px] tracking-[0.3em] uppercase hover:border-primary hover:text-primary transition-colors inline-flex items-center gap-2">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-                        WhatsApp
-                    </a>
-                    <a href="mailto:yamagataoni@gmail.com" class="border border-border text-foreground px-8 py-4 text-[11px] tracking-[0.3em] uppercase hover:border-primary hover:text-primary transition-colors inline-flex items-center gap-2">
+                    <a href="mailto:{{ config('site.contact.email') }}" class="bg-[#c41e3a] text-white px-8 py-4 text-[11px] tracking-[0.3em] uppercase font-semibold rounded-xl shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center gap-2">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
                         Email
                     </a>

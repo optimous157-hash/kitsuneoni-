@@ -8,7 +8,7 @@
 @section('content')
 
 {{-- HERO --}}
-<section class="relative py-24 lg:py-32 bg-background overflow-hidden">
+<section class="relative py-16 md:py-24 lg:py-32 bg-background overflow-hidden">
     <div class="absolute inset-0 bg-gradient-to-br from-background via-primary/5 to-primary/[0.07]"></div>
     <div class="relative max-w-[1440px] mx-auto px-6 lg:px-12 text-center">
         <span class="text-8xl font-japanese text-primary/10 block mb-6">忠誠</span>
@@ -19,7 +19,7 @@
 </section>
 
 {{-- HOW IT WORKS --}}
-<section class="py-24 lg:py-32 bg-background border-t border-border">
+<section class="py-16 md:py-24 lg:py-32 bg-background border-t border-border">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="text-center mb-16">
             <span class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4 block">How It Works</span>
@@ -43,7 +43,7 @@
 </section>
 
 {{-- TIER CARDS --}}
-<section class="py-24 lg:py-32 bg-card border-t border-border">
+<section class="py-16 md:py-24 lg:py-32 bg-card border-t border-border">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="text-center mb-16">
             <span class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4 block">Membership Tiers</span>

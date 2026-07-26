@@ -7,7 +7,7 @@
 
 @section('content')
 
-<section class="py-24 lg:py-32">
+<section class="py-16 md:py-24 lg:py-32">
     <div class="max-w-2xl mx-auto px-6 lg:px-12">
 
         <div class="text-center mb-12">
@@ -23,6 +23,7 @@
         @endif
 
         <form action="{{ route('order.store') }}" method="POST" x-data="{ loading: false }" @submit="loading = true" class="space-y-6">
+            @csrf
 
             {{-- Selected Product --}}
             @if($product)
@@ -109,19 +110,43 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <div>
                         <label class="block text-sm font-medium text-foreground mb-2">Country <span class="text-primary">*</span></label>
-                        <select name="customer_country" class="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground focus:outline-none focus:border-primary transition-colors text-sm" required>
-                            <option value="">Select country...</option>
-                            @foreach(['Russia', 'Kazakhstan', 'Uzbekistan', 'Kyrgyzstan', 'Tajikistan', 'Turkmenistan', 'Belarus', 'Ukraine', 'Georgia', 'Armenia', 'Azerbaijan', 'Moldova', 'United States', 'United Kingdom', 'Germany', 'France', 'Canada', 'Australia', 'Japan', 'South Korea', 'China', 'Turkey', 'Israel', 'UAE'] as $country)
-                            <option value="{{ $country }}" {{ old('customer_country') == $country ? 'selected' : '' }}>{{ $country }}</option>
-                            @endforeach
-                        </select>
+                        <div
+                            x-data="countrySelect({
+                                name: 'customer_country',
+                                old: {{ Js::from(old('customer_country')) }},
+                                countries: {{ Js::from(config('countries')) }}
+                            })"
+                            x-init="init()"
+                            class="relative"
+                        >
+                            <input type="hidden" name="customer_country" :value="selected">
+                            <button type="button" @click="open = !open; if(open) $nextTick(() => $refs.search.focus())" @click.outside="open = false"
+                                class="w-full px-4 py-3 bg-muted border border-border rounded-xl text-left text-foreground focus:outline-none focus:border-primary transition-colors text-sm flex items-center justify-between">
+                                <span x-text="selected || 'Select country...'" :class="selected ? 'text-foreground' : 'text-muted-foreground/50'"></span>
+                                <svg class="w-4 h-4 text-muted-foreground shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </button>
+                            <div x-show="open" x-transition class="absolute z-20 mt-1 w-full bg-card border border-border rounded-xl shadow-lg max-h-60 overflow-y-auto">
+                                <div class="p-2 sticky top-0 bg-card border-b border-border">
+                                    <input type="text" x-model="query" x-ref="search" placeholder="Search country..."
+                                        class="w-full px-3 py-2 bg-muted border border-border rounded-lg text-foreground focus:outline-none focus:border-primary text-sm">
+                                </div>
+                                <template x-for="c in filtered" :key="c">
+                                    <button type="button" @click="select(c)"
+                                        class="w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted transition-colors"
+                                        :class="c === selected ? 'bg-primary/10 text-primary' : ''"
+                                        x-text="c"></button>
+                                </template>
+                                <div x-show="filtered.length === 0" class="px-4 py-3 text-sm text-muted-foreground">No matches</div>
+                            </div>
+                        </div>
                         @error('customer_country')
                         <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
                         @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-foreground mb-2">City <span class="text-primary">*</span></label>
-                        <input type="text" name="customer_city" value="{{ old('customer_city') }}" class="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors text-sm" required placeholder="e.g. Moscow">
+                        <input type="text" name="customer_city" value="{{ old('customer_city') }}"
+                            class="w-full px-4 py-3 bg-muted border border-border rounded-xl text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary transition-colors text-sm" required placeholder="e.g. Tokyo">
                         @error('customer_city')
                         <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
                         @enderror
@@ -150,7 +175,7 @@
                     </div>
                     <div>
                         <p class="text-sm font-medium text-foreground">How it works</p>
-                        <p class="text-xs text-muted-foreground mt-0.5">After submitting, we'll confirm your order via email within 24 hours with payment details via Telegram or WhatsApp.</p>
+                        <p class="text-xs text-muted-foreground mt-0.5">After submitting, we'll confirm your order via email within 24 hours with payment details.</p>
                     </div>
                 </div>
 

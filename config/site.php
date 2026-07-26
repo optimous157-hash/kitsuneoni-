@@ -16,12 +16,7 @@ return [
 
     'contact' => [
         'email' => env('CONTACT_EMAIL', 'orders@kitsuneoni.com'),
-        'telegram' => env('TELEGRAM_URL', 'https://t.me/Yamagataaa'),
-        'whatsapp' => env('WHATSAPP_URL', 'https://wa.me/996554633637'),
-        'instagram' => env('INSTAGRAM_URL', 'https://www.instagram.com/yamagata.oni'),
-        'telegram_catalog' => env('TELEGRAM_CATALOG', 'https://t.me/YamagataCatalog'),
-        'telegram_chat' => env('TELEGRAM_CHAT', 'https://t.me/YamagataChat'),
-        'telegram_reviews' => env('TELEGRAM_REVIEWS', 'https://t.me/YamagataReviews'),
+        'telegram' => env('TELEGRAM_URL', 'https://t.me/katana_oni'),
     ],
 
     'shipping' => [
@@ -38,7 +33,7 @@ return [
     'seo' => [
         'title' => 'Kitsuneoni — Premium Japanese Handcrafted Collectibles',
         'description' => 'Premium handcrafted Japanese collectibles. Each piece forged by hand. Katanas, blades, custom artisan works. Worldwide delivery. Kitsuneoni Workshop.',
-        'keywords' => 'japanese katana, handcrafted swords, collectible blades, kitsuneoni, premium japanese, artisan workshop, carbon steel, damascus',
+        'keywords' => 'japanese katana, handcrafted swords, collectible blades, kitsuneoni, premium japanese, artisan workshop, carbon steel, damascus, Oni like, Katana sword like, Japanese warrior like',
         'og_image' => '/images/og-default.jpg',
     ],
 

@@ -27,8 +27,33 @@ Route::get('/contact', function () {
     return view('shop.contact');
 })->name('contact');
 
+Route::post('/contact', function (\Illuminate\Http\Request $request) {
+    $data = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'subject' => 'nullable|string|max:255',
+        'message' => 'required|string|max:5000',
+    ]);
+
+    \App\Models\ContactSubmission::create($data);
+
+    try {
+        \Illuminate\Support\Facades\Mail::raw(
+            "Name: {$data['name']}\nEmail: {$data['email']}\nSubject: {$data['subject']}\n\n{$data['message']}",
+            function ($msg) use ($data) {
+                $msg->to(config('site.contact.email') ?: 'orders@kitsuneoni.com')
+                    ->subject('Contact Form: ' . ($data['subject'] ?: 'New Message'));
+            }
+        );
+    } catch (\Exception $e) {
+        \Illuminate\Support\Facades\Log::warning('Contact form mail failed: ' . $e->getMessage());
+    }
+
+    return redirect()->back()->with('success', 'Message sent! We\'ll respond within 24 hours.');
+})->name('contact.send');
+
 Route::get('/shipping', function () {
-    return view('shop.shipping');
+    return redirect()->route('faq', [], 301);
 })->name('shipping');
 
 Route::get('/loyalty', function () {

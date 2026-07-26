@@ -25,7 +25,6 @@ class Product extends Model
         'handle_material', 'scabbard_material',
         'category_id', 'brand_id',
         'meta_title', 'meta_description', 'og_image',
-        'video_url', 'video_file',
     ];
 
     protected function casts(): array
@@ -153,11 +152,6 @@ class Product extends Model
             return asset('storage/' . $primary->path);
         }
         return $this->getFallbackImage();
-    }
-
-    public function getVideoUrlAttribute(): ?string
-    {
-        return $this->attributes['video_url'] ?? null;
     }
 
     private function getFallbackImage(): string

@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Login — Kitsuneoni</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/favicon-32x32.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/apple-touch-icon.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&family=Noto+Serif+JP:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -31,10 +33,10 @@
     <div class="w-full max-w-sm relative z-10">
         <!-- Logo -->
         <div class="text-center mb-8">
-            <a href="{{ route('home') }}" class="inline-flex items-center gap-3 mb-8">
-                <div class="w-12 h-12 bg-yamagata-red rounded-2xl flex items-center justify-center shadow-xl shadow-yamagata-red/20">
-                    <span class="text-white font-bold text-xl font-japanese">鬼</span>
-                </div>
+            <a href="{{ route('home') }}" class="inline-flex items-center justify-center mb-8" aria-label="Kitsuneoni — Home">
+                <img src="{{ asset('storage/brand/logo.png') }}" srcset="{{ asset('storage/brand/logo@2x.png') }} 2x"
+                     width="512" height="512" alt="Kitsuneoni" class="w-auto object-contain"
+                     style="height:64px;filter: drop-shadow(0 0 8px rgba(201,168,76,0.3)) drop-shadow(0 1px 2px rgba(0,0,0,0.4));">
             </a>
             <h1 class="text-xl font-display font-bold text-white">Kitsuneoni Admin</h1>
             <p class="text-yamagata-steel text-sm mt-1.5">Sign in to manage your store</p>

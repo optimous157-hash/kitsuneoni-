@@ -34,7 +34,7 @@
 @section('content')
 
 <!-- Hero Carousel -->
-<section class="relative h-screen min-h-[700px] flex items-center justify-center overflow-hidden"
+<section class="relative h-screen min-h-[500px] md:min-h-[700px] flex items-center justify-center overflow-hidden"
          x-data="heroCarousel()" x-init="init()">
 
     <!-- Slides (static brand images, independent from products) -->
@@ -72,7 +72,7 @@
             Lethal<br><em class="font-light">Elegance</em>
         </h1>
         <p class="text-sm md:text-base text-muted-foreground mt-8 max-w-xl mx-auto leading-relaxed">
-            Handcrafted Japanese blades for the modern collector. Each piece forged by hand, shipped worldwide.
+            Japanese blades, made the old way. No machines, just fire and steel. Shipped to your door.
         </p>
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
             <a href="{{ route('shop.index') }}" class="bg-[#c41e3a] text-white px-8 py-4 text-[11px] tracking-[0.3em] uppercase font-semibold rounded-xl shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center gap-2">
@@ -87,9 +87,10 @@
 
     <!-- Bottom collection quick-links bar -->
     @if($categories->count())
+    @php $catCount = min($categories->count(), 3); @endphp
     <div class="absolute bottom-0 left-0 right-0 z-30">
         <div class="max-w-[1440px] mx-auto px-6 lg:px-12 pb-8">
-            <div class="glass border border-border/50 grid grid-cols-{{ min($categories->count(), 3) }} divide-x divide-border/50">
+            <div class="glass border border-border/50 grid grid-cols-2 sm:grid-cols-{{ $catCount }} divide-x divide-border/50">
                 @foreach($categories->take(3) as $cat)
                 <a href="{{ route('shop.index', ['category' => $cat->slug]) }}" class="flex items-center justify-center py-4 px-4 text-[11px] tracking-[0.2em] uppercase text-muted-foreground hover:text-foreground hover:bg-primary/5 transition-all duration-300">
                     {{ $cat->name }}
@@ -144,7 +145,7 @@ function heroCarousel() {
 
 <!-- Featured Products (Most Coveted) -->
 @if($featuredProducts->count())
-<section class="py-24 lg:py-32 border-t border-border">
+<section class="py-16 md:py-24 lg:py-32 border-t border-border">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
             <div>
@@ -156,7 +157,7 @@ function heroCarousel() {
             </a>
         </div>
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            @foreach($featuredProducts->take(8) as $product)
+            @foreach($featuredProducts as $product)
             @include('shop.partials.product-card', ['product' => $product])
             @endforeach
         </div>
@@ -165,15 +166,15 @@ function heroCarousel() {
 @endif
 
 <!-- Craftsmanship (two-column) -->
-<section id="craft" class="py-24 lg:py-32 border-t border-border">
+<section id="craft" class="py-16 md:py-24 lg:py-32 border-t border-border">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
             <div>
                 <p class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4">Our Philosophy</p>
                 <h2 class="font-heading text-4xl lg:text-5xl font-light text-foreground mb-8 text-balance">The Art of<br>Japanese Craftsmanship</h2>
                 <div class="space-y-4 text-muted-foreground leading-relaxed text-sm">
-                    <p>At Kitsuneoni, every piece is forged by hand in our workshop. We combine centuries-old Japanese traditions with modern precision to create collectibles that are truly one of a kind.</p>
-                    <p>From the selection of premium materials to the final polish, every step is guided by the philosophy of <em class="text-foreground font-medium">Ichigo Ichie</em> &mdash; every moment is a once-in-a-lifetime opportunity.</p>
+                    <p>There's no assembly line here. Just a hammer, an anvil, and someone who's spent years learning how to use them right. Every piece we make starts as raw steel and gets shaped by hand — no CNC, no shortcuts.</p>
+                    <p>We follow the old ways because they work. <em class="text-foreground font-medium">Ichigo Ichie</em> — every strike matters because you only get one chance to make it count. That's not a slogan, it's how we work.</p>
                 </div>
                 <div class="grid grid-cols-2 gap-6 mt-10">
                     @foreach([['Carbon Steel', 'M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z'], ['Handcrafted', 'M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4'], ['Worldwide Delivery', 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z'], ['Verified Quality', 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z']] as [$label, $path])
@@ -213,7 +214,7 @@ function heroCarousel() {
 
 <!-- Best Sellers -->
 @if($bestsellers->count())
-<section class="py-24 lg:py-32 border-t border-border">
+<section class="py-16 md:py-24 lg:py-32 border-t border-border">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
             <div>
@@ -235,7 +236,7 @@ function heroCarousel() {
 
 <!-- New Arrivals -->
 @if($newArrivals->count())
-<section class="py-24 lg:py-32 border-t border-border">
+<section class="py-16 md:py-24 lg:py-32 border-t border-border">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12">
             <div>
@@ -257,7 +258,7 @@ function heroCarousel() {
 
 <!-- Testimonials -->
 @if($testimonials->count())
-<section class="py-24 lg:py-32 border-t border-border">
+<section class="py-16 md:py-24 lg:py-32 border-t border-border">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <div class="text-center mb-12">
             <p class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4">Collector Voices</p>
@@ -292,7 +293,7 @@ function heroCarousel() {
 
 <!-- FAQ -->
 @if($faqs->count())
-<section id="faq" class="py-24 lg:py-32 border-t border-border">
+<section id="faq" class="py-16 md:py-24 lg:py-32 border-t border-border">
     <div class="max-w-2xl mx-auto px-6 lg:px-12">
         <div class="text-center mb-12">
             <p class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4">Questions</p>
@@ -318,11 +319,11 @@ function heroCarousel() {
 @endif
 
 <!-- CTA -->
-<section class="py-24 lg:py-32 border-t border-border text-center">
+<section class="py-16 md:py-24 lg:py-32 border-t border-border text-center">
     <div class="max-w-[1440px] mx-auto px-6 lg:px-12">
         <p class="text-[11px] tracking-[0.4em] uppercase text-primary mb-4">Ready?</p>
         <h2 class="font-heading text-4xl lg:text-5xl font-light text-foreground mb-6 text-balance">Ready to wield legendary steel?</h2>
-        <p class="text-sm text-muted-foreground max-w-lg mx-auto mb-10 leading-relaxed">Every piece is handcrafted with precision. Order yours today and join the Kitsuneoni family.</p>
+        <p class="text-sm text-muted-foreground max-w-lg mx-auto mb-10 leading-relaxed">Took a look around? If something catches your eye, it's yours. We'll get it to you, wherever you are.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{{ route('shop.index') }}" class="bg-[#c41e3a] text-white px-8 py-4 text-[11px] tracking-[0.3em] uppercase font-semibold rounded-xl shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 inline-flex items-center gap-2">
                 Browse Collection

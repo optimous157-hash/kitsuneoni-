@@ -22,8 +22,8 @@
                 </div>
             </div>
 
-            <!-- Specs Overlay on Hover -->
-            <div class="absolute inset-0 bg-background/85 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
+            <!-- Specs Overlay on Hover / Tap -->
+            <div x-data="{ showSpecs: false }" @click="showSpecs = !showSpecs" @mouseenter="showSpecs = true" @mouseleave="showSpecs = false" :class="showSpecs ? 'opacity-100' : 'opacity-0 lg:group-hover:opacity-100'" class="absolute inset-0 bg-background/85 backdrop-blur-md transition-opacity duration-500 flex flex-col justify-end p-4 sm:p-6">
                 @if($product->material)
                 <div class="space-y-2">
                     @if($product->steel_type)
@@ -69,7 +69,7 @@
             </div>
 
             <!-- Wishlist Button -->
-            <button @click.prevent.stop="$store.wishlist.toggle({ id: {{ $product->id }}, name: '{{ addslashes($product->name) }}', slug: '{{ $product->slug }}', price: '{{ $product->formatted_price }}', image: '{{ $product->primary_image_url }}', url: '{{ $product->url }}' })" class="absolute top-4 right-4 z-10 w-9 h-9 flex items-center justify-center rounded-full bg-background/60 backdrop-blur-md transition-all duration-300 hover:bg-background/90 hover:scale-110" aria-label="Toggle wishlist">
+            <button @click.prevent.stop="$store.wishlist.toggle({ id: {{ $product->id }}, name: '{{ addslashes($product->name) }}', slug: '{{ $product->slug }}', price: '{{ $product->formatted_price }}', image: '{{ $product->primary_image_url }}', url: '{{ $product->url }}' })" class="absolute top-4 right-4 z-10 w-11 h-11 flex items-center justify-center rounded-full bg-background/60 backdrop-blur-md transition-all duration-300 hover:bg-background/90 hover:scale-110" aria-label="Toggle wishlist">
                 <svg class="w-4 h-4 transition-colors duration-300" :class="$store.wishlist.has({{ $product->id }}) ? 'text-primary fill-primary' : 'text-muted-foreground'" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
             </button>
         </div>
