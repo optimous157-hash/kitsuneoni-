@@ -40,12 +40,14 @@ class HomeController extends Controller
 
         $faqs = Faq::active()->ordered()->limit(6)->get();
 
-        $stats = [
-            'products_sold' => Product::sum('sales_count'),
-            'happy_customers' => Review::approved()->count('id'),
-            'countries_served' => 50,
-            'years_crafting' => 5,
-        ];
+        $stats = \Illuminate\Support\Facades\Cache::remember('homepage_stats', now()->addHours(1), function () {
+            return [
+                'products_sold' => Product::sum('sales_count'),
+                'happy_customers' => Review::approved()->count('id'),
+                'countries_served' => 50,
+                'years_crafting' => 5,
+            ];
+        });
 
         return view('shop.home', compact(
             'featuredProducts', 'bestsellers', 'newArrivals',

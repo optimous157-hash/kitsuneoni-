@@ -69,6 +69,7 @@ class ProductController extends Controller
     {
         $product = Product::active()
             ->where('slug', $slug)
+            ->withReviewAggregates()
             ->with([
                 'images',
                 'category',

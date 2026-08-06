@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Mail\OrderConfirmationMail;
 use App\Mail\AdminOrderNotificationMail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
@@ -41,70 +42,86 @@ class OrderController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        $product = Product::with('images')->findOrFail($validated['product_id']);
+        $quantity = (int) $validated['quantity'];
 
-        $unitPrice = $product->price;
-        if (!empty($validated['variant_id'])) {
-            $variant = $product->variants()->find($validated['variant_id']);
-            if ($variant) {
-                $unitPrice += $variant->price_modifier;
+        return DB::transaction(function () use ($validated, $request, $quantity) {
+            $product = Product::active()
+                ->inStock()
+                ->with(['images', 'variants' => fn ($q) => $q->where('is_active', true)])
+                ->lockForUpdate()
+                ->findOrFail($validated['product_id']);
+
+            if ($product->stock < $quantity) {
+                throw new \Illuminate\Validation\ValidationException(
+                    \Illuminate\Support\Facades\Validator::make([], [
+                        'quantity' => ['Insufficient stock. Only ' . $product->stock . ' available.'],
+                    ])
+                );
             }
-        }
 
-        $quantity = $validated['quantity'];
-        $subtotal = $unitPrice * $quantity;
-        $shippingCost = $this->calculateShipping($validated['customer_country']);
-        $total = $subtotal + $shippingCost;
+            $unitPrice = $product->price;
+            $variant = null;
+            if (!empty($validated['variant_id'])) {
+                $variant = $product->variants->firstWhere('id', $validated['variant_id']);
+                if ($variant) {
+                    $unitPrice += $variant->price_modifier;
+                }
+            }
 
-        $primaryImage = $product->images()->where('is_primary', true)->first()
-            ?? $product->images()->first();
+            $subtotal = $unitPrice * $quantity;
+            $shippingCost = $this->calculateShipping($validated['customer_country']);
+            $total = $subtotal + $shippingCost;
 
-        $order = Order::create([
-            'reference_number' => 'YO-' . strtoupper(Str::random(8)),
-            'customer_name' => $validated['customer_name'],
-            'customer_email' => $validated['customer_email'],
-            'customer_phone' => $validated['customer_phone'],
-            'customer_country' => $validated['customer_country'],
-            'customer_city' => $validated['customer_city'],
-            'customer_address' => $validated['customer_address'],
-            'subtotal' => $subtotal,
-            'shipping_cost' => $shippingCost,
-            'total' => $total,
-            'notes' => $validated['notes'] ?? null,
-            'ip_address' => $request->ip(),
-            'user_agent' => $request->userAgent(),
-            'status' => 'pending',
-        ]);
+            $primaryImage = $product->images->firstWhere('is_primary', true)
+                ?? $product->images->first();
 
-        OrderItem::create([
-            'order_id' => $order->id,
-            'product_id' => $product->id,
-            'product_name' => $product->name,
-            'product_slug' => $product->slug,
-            'product_image' => $primaryImage?->path,
-            'quantity' => $quantity,
-            'unit_price' => $unitPrice,
-            'total_price' => $subtotal,
-            'variant' => isset($validated['variant_id']) ? $product->variants->find($validated['variant_id'])?->value : null,
-        ]);
+            $order = Order::create([
+                'reference_number' => 'YO-' . strtoupper(Str::random(8)),
+                'customer_name' => $validated['customer_name'],
+                'customer_email' => $validated['customer_email'],
+                'customer_phone' => $validated['customer_phone'],
+                'customer_country' => $validated['customer_country'],
+                'customer_city' => $validated['customer_city'],
+                'customer_address' => $validated['customer_address'],
+                'subtotal' => $subtotal,
+                'shipping_cost' => $shippingCost,
+                'total' => $total,
+                'notes' => $validated['notes'] ?? null,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+                'status' => 'pending',
+            ]);
 
-        $product->decrement('stock', $quantity);
-        $product->increment('sales_count', $quantity);
+            OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'product_slug' => $product->slug,
+                'product_image' => $primaryImage?->path,
+                'quantity' => $quantity,
+                'unit_price' => $unitPrice,
+                'total_price' => $subtotal,
+                'variant' => $variant?->value,
+            ]);
 
-        try {
-            Mail::to($order->customer_email)->send(new OrderConfirmationMail($order));
-        } catch (\Exception $e) {
-            \Log::error('Failed to send order confirmation email: ' . $e->getMessage());
-        }
+            $product->decrement('stock', $quantity);
+            $product->increment('sales_count', $quantity);
 
-        try {
-            Mail::to(config('site.contact.email'))->send(new AdminOrderNotificationMail($order));
-        } catch (\Exception $e) {
-            \Log::error('Failed to send admin order notification: ' . $e->getMessage());
-        }
+            try {
+                Mail::to($order->customer_email)->send(new OrderConfirmationMail($order));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send order confirmation email: ' . $e->getMessage());
+            }
 
-        return redirect()->route('order.success', $order->reference_number)
-            ->with('success', 'Your order has been placed successfully!');
+            try {
+                Mail::to(config('site.contact.email'))->send(new AdminOrderNotificationMail($order));
+            } catch (\Exception $e) {
+                \Log::error('Failed to send admin order notification: ' . $e->getMessage());
+            }
+
+            return redirect()->route('order.success', $order->reference_number)
+                ->with('success', 'Your order has been placed successfully!');
+        });
     }
 
     public function success(string $referenceNumber)

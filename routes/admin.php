@@ -15,7 +15,9 @@ use App\Http\Controllers\Admin\ContactController;
 
 Route::prefix('admin')->name('admin.')->middleware('web')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::post('/login', [AuthController::class, 'login'])
+        ->middleware('throttle:5,1')
+        ->name('login.submit');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::middleware([\App\Http\Middleware\AdminMiddleware::class])->group(function () {

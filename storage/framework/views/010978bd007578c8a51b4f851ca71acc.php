@@ -428,8 +428,19 @@
 
                 <!-- Right Actions -->
                 <div class="flex items-center gap-5">
-                    <!-- Search -->
-                    <button @click="searchOpen = !searchOpen" class="text-muted-foreground hover:text-foreground transition-colors duration-300" aria-label="Search">
+                    <!-- Search (visible field on desktop) -->
+                    <div class="hidden md:flex items-center">
+                        <form action="<?php echo e(route('shop.index')); ?>" method="GET" class="relative" role="search">
+                            <input type="text" name="q" placeholder="Search katanas..." aria-label="Search products"
+                                   class="w-40 xl:w-56 bg-background/70 border border-border/60 rounded-full pl-4 pr-9 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:border-primary/60 focus:ring-2 focus:ring-primary/10 transition-all">
+                            <button type="submit" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors" aria-label="Search">
+                                <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Search (icon on mobile — opens overlay) -->
+                    <button @click="searchOpen = !searchOpen" class="md:hidden text-muted-foreground hover:text-foreground transition-colors duration-300" aria-label="Search">
                         <svg width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </button>
 

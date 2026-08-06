@@ -72,6 +72,43 @@
         <p class="text-sm md:text-base text-muted-foreground mt-8 max-w-xl mx-auto leading-relaxed">
             Japanese blades, made the old way. No machines, just fire and steel. Shipped to your door.
         </p>
+
+        <!-- Prominent Search Bar -->
+        <div class="mt-10 max-w-xl mx-auto w-full" x-data="{ query: '', results: [], loading: false, open: false }"
+             @keydown.escape="open = false">
+            <form class="relative" action="<?php echo e(route('shop.index')); ?>" method="GET"
+                  @submit="if(query.trim().length < 2) $event.preventDefault()">
+                <div class="relative">
+                    <svg class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    <input
+                        type="text" name="q" x-model="query" autocomplete="off"
+                        @input.debounce.300ms="if(query.trim().length >= 2) { loading = true; open = true; fetch('/search?q=' + encodeURIComponent(query)).then(r => r.json()).then(d => { results = d.results; loading = false; }).catch(() => { loading = false; }) } else { results = []; open = false; }"
+                        @focus="if(results.length > 0) open = true"
+                        placeholder="Search for katanas, series, steel types..."
+                        class="w-full bg-background/90 backdrop-blur-md border border-border focus:border-primary/60 rounded-2xl pl-14 pr-16 py-4 text-base text-foreground placeholder:text-muted-foreground/60 focus:outline-none focus:ring-4 focus:ring-primary/10 transition-all shadow-xl">
+                    <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-[#c41e3a] text-white p-2.5 rounded-xl hover:bg-[#9b1830] transition-colors" aria-label="Search">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </button>
+                    <span x-show="loading" class="absolute right-16 top-1/2 -translate-y-1/2 w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"></span>
+                </div>
+                <div x-show="open && results.length > 0" @click.outside="open = false"
+                     x-transition:enter="transition ease-out duration-150" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
+                     class="absolute left-0 right-0 mt-3 bg-background border border-border rounded-2xl shadow-2xl overflow-hidden text-left z-40">
+                    <template x-for="result in results" :key="result.id">
+                        <a :href="result.url" class="flex items-center gap-4 px-4 py-3 hover:bg-accent transition-colors">
+                            <img :src="result.image" :alt="result.name" class="w-11 h-11 rounded-lg object-cover">
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-medium text-foreground truncate" x-text="result.name"></p>
+                                <p class="text-xs text-muted-foreground" x-text="result.category"></p>
+                            </div>
+                            <span class="text-sm font-mono text-primary" x-text="result.price"></span>
+                        </a>
+                    </template>
+                    <a :href="'/shop?q=' + encodeURIComponent(query)" class="block px-4 py-3 text-center text-xs tracking-[0.2em] uppercase text-primary border-t border-border hover:bg-accent transition-colors">View all results</a>
+                </div>
+            </form>
+        </div>
+
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
             <a href="<?php echo e(route('shop.index')); ?>" class="bg-[#c41e3a] text-white px-8 py-4 text-[11px] tracking-[0.3em] uppercase font-semibold rounded-xl shadow-[0_0_20px_rgba(196,30,58,0.25)] hover:bg-[#9b1830] hover:shadow-[0_0_35px_rgba(196,30,58,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center gap-2">
                 Explore the Collection
